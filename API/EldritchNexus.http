@@ -1,0 +1,6 @@
+@EldritchNexus_HostAddress = http://localhost:5156
+
+GET {{EldritchNexus_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
