@@ -3,10 +3,11 @@ using System.Net.NetworkInformation;
 using Business.Contracts;
 using Data.Contracts;
 using Domain;
+using FastSurvey.Controllers;
 
 namespace Business.Implementation;
 
-public class ServerConfigService(IServerConfigRepository serverConfigRepository) : IServerConfigService
+public class ServerConfigService(IServerConfigRepository serverConfigRepository, IRoleService roleService) : IServerConfigService
 {
     public int Create(ServerConfig entity)
     {
@@ -31,7 +32,7 @@ public class ServerConfigService(IServerConfigRepository serverConfigRepository)
     public IEnumerable<string> ScanLocalNetwork()
     {
         List<string> activeServers = new List<string>();
-        string localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList
+        string? localIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList
             .FirstOrDefault( ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
             ?.ToString();
         if (localIP == null)
@@ -61,5 +62,20 @@ public class ServerConfigService(IServerConfigRepository serverConfigRepository)
             }
         });
         return activeServers;
+    }
+
+    public int CheckHealth()
+    {
+        if (roleService.Role == "server")
+        {
+            return 1;
+        }
+
+        if (roleService.Role == "client")
+        {
+            return 2;
+        }
+
+        return 0;
     }
 }

@@ -3,6 +3,9 @@ using Business.Contracts;
 using Business.Implementation;
 using Data.Contracts;
 using Data.Implementation;
+using EldritchNexus.SignalR;
+using FastSurvey.Controllers;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -25,24 +28,45 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+services.AddSignalR();
 
 /*load services*/
 services.AddScoped<IServerConfigService, ServerConfigService>();
 services.AddScoped<IServerConfigRepository, ServerConfigRepository>();
+services.AddSingleton<IRoleService, RoleService>();
 
 
 var app = builder.Build();
-//maybe put cors here
+
+Console.WriteLine("node type: ");
+var role = Console.ReadLine()?.Trim().ToLower();
+var roleService = app.Services.GetRequiredService<IRoleService>();
+
+if (role == "server")
+{
+    Console.WriteLine("Starting server...");
+    app.UseCors("AllowSpecificOrigin");
+    app.MapHub<CentralHub>("/centralHub");
+}
+else if (role == "client")
+{
+    Console.WriteLine("Starting client...");
+    app.UseCors();
+
+}
+roleService.Role = role;
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();

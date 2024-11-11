@@ -15,4 +15,10 @@ public class ServerConfigController(IServerConfigService serverConfigService) : 
         var servers = serverConfigService.ScanLocalNetwork();
         return Ok(servers);
     }
+    [HttpGet("CheckHealth")]
+    public async Task<ActionResult> CheckHealth()
+    {
+        var response = serverConfigService.CheckHealth();
+        return Ok(response);
+    }
 }
