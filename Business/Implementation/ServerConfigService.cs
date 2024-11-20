@@ -40,7 +40,7 @@ public class ServerConfigService(IServerConfigRepository serverConfigRepository,
         string subnet = string.Join(".", localIP.Split('.').Take(3)) + ".";
         Parallel.For(1, 255, i =>
         {
-            string ip = subnet + i;
+            string ip = "http://" + subnet + i + "5002";
             using (Ping ping = new Ping())
             {
                 try
