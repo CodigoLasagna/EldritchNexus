@@ -66,16 +66,12 @@ public class ServerConfigService(IServerConfigRepository serverConfigRepository,
 
     public int CheckHealth()
     {
-        if (roleService.Role == "server")
+        return roleService.Role switch
         {
-            return 1;
-        }
-
-        if (roleService.Role == "client")
-        {
-            return 2;
-        }
-
-        return 0;
+            "server" => 1,
+            "client" => 2,
+            _ => 0
+        };
     }
+
 }

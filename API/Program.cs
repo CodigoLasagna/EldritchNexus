@@ -33,6 +33,8 @@ services.AddSignalR();
 /*load services*/
 services.AddScoped<IServerConfigService, ServerConfigService>();
 services.AddScoped<IServerConfigRepository, ServerConfigRepository>();
+services.AddScoped<IClientService, ClientService>();
+services.AddScoped<IClientRepository, ClientRespository>();
 services.AddSingleton<IRoleService, RoleService>();
 
 
