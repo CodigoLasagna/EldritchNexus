@@ -4,11 +4,11 @@ using Microsoft.Extensions.Options;
 
 namespace Data
 {
-    public class SurveyDbContext : DbContext
+    public class GitNexusDBContext : DbContext
     {
 
-        public SurveyDbContext() { }
-        public SurveyDbContext(DbContextOptions<SurveyDbContext> options) : base(options) { }
+        public GitNexusDBContext() { }
+        public GitNexusDBContext(DbContextOptions<GitNexusDBContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -16,14 +16,18 @@ namespace Data
             optionsBuilder.UseMySql(connectionString,
                 ServerVersion.AutoDetect(connectionString));
         }
-        public DbSet<ServerConfig> ServerConfigs { get; set; }
-        
+        //public DbSet<ServerConfig> ServerConfigs { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Node> Nodes { get; set; }
     }
     public class DbConnection
     {
-        public static DbContextOptions<SurveyDbContext> GetDbContextOptions()
+        public static DbContextOptions<GitNexusDBContext> GetDbContextOptions()
         {
-            return new DbContextOptionsBuilder<SurveyDbContext>()
+            return new DbContextOptionsBuilder<GitNexusDBContext>()
                 .UseMySql(Helper.Connection.Constants.ConnectionString,
                     ServerVersion.AutoDetect(Helper.Connection.Constants.ConnectionString))
                 .Options;

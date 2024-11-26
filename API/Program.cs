@@ -5,6 +5,7 @@ using Data.Contracts;
 using Data.Implementation;
 using EldritchNexus.SignalR;
 using FastSurvey.Controllers;
+using Helper.lib2git;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,9 @@ services.AddSingleton<IClientService, ClientService>();
 services.AddScoped<IClientRepository, ClientRespository>();
 services.AddSingleton<IRoleService, RoleService>();
 
+services.AddScoped<IUserService, UserService>();
+services.AddScoped<IUserRepository, UserRepository>();
+
 
 var app = builder.Build();
 
@@ -49,6 +53,13 @@ if (role == "server")
     Console.WriteLine("Starting server...");
     app.UseCors("AllowSpecificOrigin");
     app.MapHub<CentralHub>("/centralHub");
+    
+    string repostPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"GitNexus/ServerRepos"
+    );
+    Console.WriteLine(repostPath);
+    GitServer server = new GitServer(repostPath);
+    server.CreateRepository("DummyServer");
 }
 else if (role == "client")
 {
