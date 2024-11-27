@@ -45,7 +45,9 @@ public class UserRepository : IUserRepository
     {
         var connectioOptions = DbConnection.GetDbContextOptions();
         using var ctx = new GitNexusDBContext(options: connectioOptions);
-        bool doesAdminExists = ctx.Users.FirstOrDefault(u => u.UserRoleId == 1) != null;
+        bool doesAdminExists = ctx.Users
+            .Where( u => u.Email == "admin@admin.com" )
+            .FirstOrDefault(u => u.UserRoleId == 1) != null;
         return doesAdminExists;
     }
 

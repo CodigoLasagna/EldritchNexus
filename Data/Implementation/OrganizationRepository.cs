@@ -1,5 +1,6 @@
 using Data.Contracts;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 using Model;
 
 namespace Data.Implementation;
@@ -23,6 +24,36 @@ public class OrganizationRepository : IOrganizationRepository
         using var ctx = new GitNexusDBContext(options: connectioOptions);
         Organization existingOrganization = ctx.Organizations.FirstOrDefault( o => o.Hostname == hostname);
         return existingOrganization;
+    }
+
+    public List<Organization> GetOrganizations(OrganizationPerTypeModel model)
+    {
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        
+        List<Organization> organizations = new List<Organization>();
+
+        if (model.type == 0)
+        {
+            organizations = ctx.Organizations
+                .Where(o => o.Users.Any(u => u.Id == model.userId))
+                .ToList();
+        }
+        if (model.type == 1)
+        {
+            organizations = ctx.Organizations
+                .Include( o => o.Users)
+                .Where(o => o.Users.Any(u => u.Id != model.userId))
+                .ToList();
+        }
+        if (model.type == 2)
+        {
+            organizations = ctx.Organizations
+                .ToList()
+                .Where(o => o.AdminsIds.Contains(model.userId))
+                .ToList();
+        }
+        return organizations;
     }
 
     public int Create(Organization entity)

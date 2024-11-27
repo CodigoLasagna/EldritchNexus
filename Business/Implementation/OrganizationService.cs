@@ -19,7 +19,12 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         newOrg.Hostname = machineHostname;
         return (organizationRepository.CreateOrganization(newOrg));
     }
-    
+
+    public List<Organization> GetOrganizations(OrganizationPerTypeModel model)
+    {
+        return (organizationRepository.GetOrganizations(model));
+    }
+
     public int Create(Organization entity)
     {
         throw new NotImplementedException();
