@@ -10,6 +10,7 @@ public class Project
     public int? CreatorId { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+    public string? GitRepositoryPath { get; set; }
     public int? TeamId { get; set; }
     public Team? Team { get; set; }
 }
