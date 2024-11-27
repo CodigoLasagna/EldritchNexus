@@ -5,7 +5,7 @@
 namespace Helper.Migrations
 {
     /// <inheritdoc />
-    public partial class usercanhaveprojects : Migration
+    public partial class testKey : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

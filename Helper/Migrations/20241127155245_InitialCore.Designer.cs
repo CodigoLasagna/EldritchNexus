@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Helper.Migrations
 {
     [DbContext(typeof(GitNexusDBContext))]
-    [Migration("20241127141858_TeamsState")]
-    partial class TeamsState
+    [Migration("20241127155245_InitialCore")]
+    partial class InitialCore
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,6 +80,9 @@ namespace Helper.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("GitRepositoryPath")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -87,6 +90,8 @@ namespace Helper.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("TeamId");
 
@@ -196,9 +201,15 @@ namespace Helper.Migrations
 
             modelBuilder.Entity("Domain.Project", b =>
                 {
+                    b.HasOne("Domain.User", "Creator")
+                        .WithMany("Projects")
+                        .HasForeignKey("CreatorId");
+
                     b.HasOne("Domain.Team", "Team")
                         .WithMany("Projects")
                         .HasForeignKey("TeamId");
+
+                    b.Navigation("Creator");
 
                     b.Navigation("Team");
                 });
@@ -263,6 +274,11 @@ namespace Helper.Migrations
                 });
 
             modelBuilder.Entity("Domain.Team", b =>
+                {
+                    b.Navigation("Projects");
+                });
+
+            modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Navigation("Projects");
                 });

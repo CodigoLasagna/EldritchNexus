@@ -1,6 +1,7 @@
 using Data.Contracts;
 using Domain;
 using Helper.lib2git;
+using Microsoft.EntityFrameworkCore;
 using Model;
 
 namespace Data.Implementation;
@@ -15,11 +16,13 @@ public class ProjectRepository : IProjectRepository
         if (curProject != null)
             return 0;
         Project newProject = new Project();
-        User curUser = ctx.Users.FirstOrDefault( u => u.Id == model.CreatorId);
+        User curUser = ctx.Users
+            .Include( u => u.Projects)
+            .FirstOrDefault( u => u.Id == model.CreatorId);
         if (curUser == null)
             return 0;
         newProject.Creator = curUser;
-        //newProject.CreatorId = model.CreatorId;
+        newProject.CreatorId = model.CreatorId;
         newProject.Name = model.Name;
         newProject.Description = model.Description;
         newProject.TeamId = model.TeamId;
@@ -28,6 +31,7 @@ public class ProjectRepository : IProjectRepository
         );
         GitServer server = new GitServer(repostPath);
         newProject.GitRepositoryPath = Path.Combine(repostPath, model.Name);
+        //curUser.Projects.Add( newProject );
         server.CreateRepository(newProject.Name);
         ctx.Projects.Add(newProject);
         ctx.SaveChanges();
@@ -46,6 +50,7 @@ public class ProjectRepository : IProjectRepository
     
         List<Project> projects = ctx.Projects
             .Where(p => userTeamIds.Contains((int)p.TeamId))
+            .Include(p => p.Creator)
             .ToList();
     
         return projects; 

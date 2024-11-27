@@ -51,6 +51,28 @@ namespace Helper.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nickname = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Password = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProfileImageUrl = table.Column<string>(type: "varchar(1200)", maxLength: 1200, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserRoleId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "NodeOrganization",
                 columns: table => new
                 {
@@ -83,8 +105,7 @@ namespace Helper.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserIds = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    State = table.Column<bool>(type: "tinyint(1)", nullable: true),
                     AdminsIds = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     OrganizationId = table.Column<int>(type: "int", nullable: true)
@@ -101,30 +122,27 @@ namespace Helper.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "OrganizationUser",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nickname = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Password = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ProfileImageUrl = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserRoleId = table.Column<int>(type: "int", nullable: true),
-                    OrganizationId = table.Column<int>(type: "int", nullable: true)
+                    OrganizationsId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_OrganizationUser", x => new { x.OrganizationsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_Users_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_OrganizationUser_Organizations_OrganizationsId",
+                        column: x => x.OrganizationsId,
                         principalTable: "Organizations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrganizationUser_Users_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -139,6 +157,8 @@ namespace Helper.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    GitRepositoryPath = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     TeamId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -149,6 +169,36 @@ namespace Helper.Migrations
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Projects_Users_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TeamUser",
+                columns: table => new
+                {
+                    TeamsId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamUser", x => new { x.TeamsId, x.UsersId });
+                    table.ForeignKey(
+                        name: "FK_TeamUser_Teams_TeamsId",
+                        column: x => x.TeamsId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeamUser_Users_UsersId",
+                        column: x => x.UsersId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -156,6 +206,16 @@ namespace Helper.Migrations
                 name: "IX_NodeOrganization_OrganizationsId",
                 table: "NodeOrganization",
                 column: "OrganizationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrganizationUser_UsersId",
+                table: "OrganizationUser",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_CreatorId",
+                table: "Projects",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_TeamId",
@@ -168,9 +228,9 @@ namespace Helper.Migrations
                 column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_OrganizationId",
-                table: "Users",
-                column: "OrganizationId");
+                name: "IX_TeamUser_UsersId",
+                table: "TeamUser",
+                column: "UsersId");
         }
 
         /// <inheritdoc />
@@ -180,16 +240,22 @@ namespace Helper.Migrations
                 name: "NodeOrganization");
 
             migrationBuilder.DropTable(
+                name: "OrganizationUser");
+
+            migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "TeamUser");
 
             migrationBuilder.DropTable(
                 name: "Nodes");
 
             migrationBuilder.DropTable(
                 name: "Teams");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Organizations");
