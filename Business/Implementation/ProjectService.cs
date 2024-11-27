@@ -17,6 +17,16 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
        return (projectRepository.GetProjectsFromTeams(model));
     }
 
+    public List<CommitDetailsModel> GetCommitHistory(ProjectGetDetailsModel model)
+    {
+       return (projectRepository.GetCommitHistory(model));
+    }
+
+    //public List<CommitHistoryModel> GetCommitHistory(ProjectDetailsMode model)
+    //{
+    //    return (projectRepository.GetCommitHistory(model));
+    //}
+
     public int Create(Project entity)
     {
         throw new NotImplementedException();

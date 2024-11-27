@@ -21,4 +21,10 @@ public class ProjectController(IProjectService projectService) : ControllerBase
     {
         return Ok(projectService.GetProjectsFromTeams(model));
     }
+    
+    [HttpPost("GetCommitHistory")]
+    public async Task<ActionResult> GetCommitHistory([FromBody] ProjectGetDetailsModel model)
+    {
+        return Ok(projectService.GetCommitHistory(model));
+    }
 }

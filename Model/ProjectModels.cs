@@ -16,3 +16,22 @@ public class ProjectListModel
 {
     public int userId { get; set; }
 }
+
+public class ProjectGetDetailsModel
+{
+    public int ProjectId { get; set; }
+}
+public class ProjectDetailsModel
+{
+    public int ProjectId { get; set; }
+    public List<CommitDetailsModel> CommitHistory { get; set; } = new List<CommitDetailsModel>();
+}
+
+public class CommitDetailsModel
+{
+    public string CommitId { get; set; }
+    public string Author { get; set; }
+    public string Message { get; set; }
+    public DateTimeOffset Date { get; set; }
+    public List<string> Changes { get; set; } = new List<string>();
+}
