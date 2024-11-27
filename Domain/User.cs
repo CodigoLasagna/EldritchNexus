@@ -13,5 +13,5 @@ public class User
     public string? ProfileImageUrl { get; set; }
     public int? UserRoleId { get; set; }
     //public List<Team>? Teams { get; set; }
-    //public List<Organization>? Organizations { get; set; }
+    public List<Organization>? Organizations { get; set; }
 }

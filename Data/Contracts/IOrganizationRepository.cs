@@ -9,4 +9,5 @@ public interface IOrganizationRepository : IGenericRespository<Organization>
     Organization GetExistingOrganization(string hostname);
     
     List<Organization> GetOrganizations(OrganizationPerTypeModel model);
+    bool AddUserToOrganization(UserOrgModel model);
 }

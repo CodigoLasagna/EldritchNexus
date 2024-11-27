@@ -46,3 +46,9 @@ public class RenewTokenModel
     [Required]
     public string Token { get; set; }
 }
+
+public class GenericUserIdModel
+{
+    [Required]
+    public int userId { get; set; }
+}

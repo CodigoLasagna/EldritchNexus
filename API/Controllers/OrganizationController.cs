@@ -13,4 +13,10 @@ public class OrganizationController(IOrganizationService organizationService) : 
     {
         return Ok(organizationService.GetOrganizations(model));
     }
+    
+    [HttpPost("AddUserToOrganization")]
+    public async Task<ActionResult> AddUserToOrganization([FromBody] UserOrgModel model)
+    {
+        return Ok(organizationService.AddUserToOrganization(model));
+    }
 }

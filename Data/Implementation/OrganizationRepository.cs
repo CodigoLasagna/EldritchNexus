@@ -12,6 +12,7 @@ public class OrganizationRepository : IOrganizationRepository
         var connectioOptions = DbConnection.GetDbContextOptions();
         using var ctx = new GitNexusDBContext(options: connectioOptions);
         organization.AdminsIds = new List<int>();
+        organization.Users = new List<User>();
         ctx.Organizations.Add(organization);
         ctx.SaveChanges();
         int orgId = organization.Id;
@@ -36,6 +37,7 @@ public class OrganizationRepository : IOrganizationRepository
         if (model.type == 0)
         {
             organizations = ctx.Organizations
+                .Include( o => o.Users)
                 .Where(o => o.Users.Any(u => u.Id == model.userId))
                 .ToList();
         }
@@ -54,6 +56,24 @@ public class OrganizationRepository : IOrganizationRepository
                 .ToList();
         }
         return organizations;
+    }
+
+    public bool AddUserToOrganization(UserOrgModel model)
+    {
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        User curUser = ctx.Users.FirstOrDefault(u => u.Id == model.userId);
+        if (curUser == null)
+            return false;
+        Organization curOrg = ctx.Organizations
+            .Include( o => o.Users)
+            .FirstOrDefault( o=> o.Id == model.orgId);
+        if (curOrg == null)
+            return false;
+        
+        curOrg.Users.Add( curUser );
+        ctx.SaveChanges();
+        return true;
     }
 
     public int Create(Organization entity)

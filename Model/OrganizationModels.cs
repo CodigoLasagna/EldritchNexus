@@ -12,3 +12,10 @@ public class OrganizationPerTypeModel
     public int userId { get; set; }
     public int type { get; set; }
 }
+
+public class UserOrgModel
+{
+    [Required]
+    public int userId { get; set; }
+    public int orgId { get; set; }
+}
