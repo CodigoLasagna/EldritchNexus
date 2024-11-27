@@ -8,7 +8,7 @@ public class Organization
     public int Id { get; set; }
     public string? Name { get; set; }
     public string? OrganizationIconUrl { get; set; }
-    public string? MainHostUrl { get; set; }
+    public string? Hostname { get; set; }
     public List<Team>? Teams { get; set; }
     public List<User>? Users { get; set; }
     public List<Node>? Nodes { get; set; }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Helper.Migrations
 {
     [DbContext(typeof(GitNexusDBContext))]
-    [Migration("20241126090116_InitialCore")]
+    [Migration("20241126104848_InitialCore")]
     partial class InitialCore
     {
         /// <inheritdoc />
@@ -52,7 +52,7 @@ namespace Helper.Migrations
                     b.Property<string>("AdminsIds")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MainHostUrl")
+                    b.Property<string>("Hostname")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")

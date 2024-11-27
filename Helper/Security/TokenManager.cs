@@ -36,6 +36,7 @@ public class TokenManager
             new Claim("id", user.Id.ToString()),
             new Claim("email", user.Email),
             new Claim("nickname", user.Nickname),
+            new Claim("roleId", user.UserRoleId.ToString()),
             new Claim("profileimageurl", user.ProfileImageUrl),
         };
         var token = new JwtSecurityToken(
@@ -75,5 +76,15 @@ public class TokenManager
         }
 
         return -1;
+    }
+    public string RenewJwtToken(string token, User updatedUser)
+    {
+        int userId = ValidateToken(token);
+        if (userId == -1 || userId != updatedUser.Id)
+        {
+            throw new SecurityTokenException("Token inválido o no coincide con el usuario");
+        }
+    
+        return GenerateJwtToken(updatedUser);
     }
 }

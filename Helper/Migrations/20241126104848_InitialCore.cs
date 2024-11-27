@@ -39,7 +39,7 @@ namespace Helper.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     OrganizationIconUrl = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MainHostUrl = table.Column<string>(type: "longtext", nullable: true)
+                    Hostname = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AdminsIds = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")

@@ -9,4 +9,7 @@ public interface IUserService : IGenericService<User>
     string LoginUser(UserLoginModel model);
     
     int UpdateRole(UserUpdateRoleModel model);
+    bool AddGenericSysAdmin();
+    bool UpdateUserData(UserUpdateModel model);
+    string RenewUserToken(string existingToken, int userId);
 }

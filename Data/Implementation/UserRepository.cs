@@ -1,7 +1,9 @@
 using System.Data.Common;
+using System.Net;
 using Data.Contracts;
 using Domain;
 using Helper.Security;
+using Microsoft.EntityFrameworkCore;
 using Model;
 
 namespace Data.Implementation;
@@ -13,6 +15,7 @@ public class UserRepository : IUserRepository
     {
         var connectioOptions = DbConnection.GetDbContextOptions();
         using var ctx = new GitNexusDBContext(options: connectioOptions);
+        user.ProfileImageUrl = "";
         ctx.Users.Add(user);
         ctx.SaveChanges();
         return user.Id;
@@ -45,6 +48,52 @@ public class UserRepository : IUserRepository
         bool doesAdminExists = ctx.Users.FirstOrDefault(u => u.UserRoleId == 1) != null;
         return doesAdminExists;
     }
+
+    public bool AddUserAdminToOrganization(int userId)
+    {
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        User SysAdmin = ctx.Users.FirstOrDefault(u => u.Id == userId);
+        string machineHostname = Dns.GetHostName();
+        Organization mainOrg = ctx.Organizations
+            .Include(o => o.Users)
+            .FirstOrDefault( o => o.Hostname == machineHostname);
+        if (SysAdmin == null || mainOrg == null)
+            return false;
+        mainOrg.Users.Add(SysAdmin);
+        mainOrg.AdminsIds.Add(SysAdmin.Id);
+        ctx.SaveChanges();
+        return true;
+    }
+
+    public bool UpdateUserData(UserUpdateModel model)
+    {
+        var TokenManager = new TokenManager();
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        User curUser = ctx.Users.FirstOrDefault( u => u.Id == model.UserId);
+        if (curUser == null) return false;
+        if (!String.IsNullOrEmpty(model.Nickname) && curUser.Nickname != model.Nickname)
+            curUser.Nickname = model.Nickname;
+        if (!String.IsNullOrEmpty(model.Email) && curUser.Email != model.Email)
+            curUser.Email = model.Email;
+        if (!String.IsNullOrEmpty(model.ProfileImageUrl) && curUser.ProfileImageUrl != model.ProfileImageUrl)
+            curUser.ProfileImageUrl = model.ProfileImageUrl;
+        if (!String.IsNullOrEmpty(model.Password) && !TokenManager.VerifyPassword(model.Password, curUser.Password))
+            curUser.Password = TokenManager.HashPassword(model.Password);
+        ctx.Users.Update(curUser);
+        ctx.SaveChanges();
+        return true;
+    }
+
+    User IUserRepository.Read(int Id)
+    {
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        User curUser = ctx.Users.FirstOrDefault( u => u.Id == Id);
+        return curUser;
+    }
+
 
     public int Create(User entity)
     {

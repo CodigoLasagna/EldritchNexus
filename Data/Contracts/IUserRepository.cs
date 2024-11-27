@@ -9,4 +9,8 @@ public interface IUserRepository : IGenericRespository<User>
     User GetUserByEmail(string email);
     int UpdateUserRole(UserUpdateRoleModel model);
     bool AdminUserExists();
+
+    bool AddUserAdminToOrganization(int userId);
+    bool UpdateUserData(UserUpdateModel model);
+    User Read(int Id);
 }

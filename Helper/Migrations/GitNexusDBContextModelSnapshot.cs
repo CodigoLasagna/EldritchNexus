@@ -49,7 +49,7 @@ namespace Helper.Migrations
                     b.Property<string>("AdminsIds")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MainHostUrl")
+                    b.Property<string>("Hostname")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
