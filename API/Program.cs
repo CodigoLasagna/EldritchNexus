@@ -45,6 +45,8 @@ services.AddScoped<IOrganizationService, OrganizationService>();
 services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 services.AddScoped<ITeamService, TeamService>();
 services.AddScoped<ITeamRepository, TeamRepository>();
+services.AddScoped<IProjectService, ProjectService>();
+services.AddScoped<IProjectRepository, ProjectRepository>();
 
 
 var app = builder.Build();

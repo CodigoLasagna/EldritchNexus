@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Helper.Migrations
 {
     [DbContext(typeof(GitNexusDBContext))]
-    partial class GitNexusDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241127145306_projectUserCreator")]
+    partial class projectUserCreator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,7 +202,7 @@ namespace Helper.Migrations
             modelBuilder.Entity("Domain.Project", b =>
                 {
                     b.HasOne("Domain.User", "Creator")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("CreatorId");
 
                     b.HasOne("Domain.Team", "Team")
@@ -271,11 +274,6 @@ namespace Helper.Migrations
                 });
 
             modelBuilder.Entity("Domain.Team", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Navigation("Projects");
                 });

@@ -16,6 +16,7 @@ public class UserRepository : IUserRepository
         var connectioOptions = DbConnection.GetDbContextOptions();
         using var ctx = new GitNexusDBContext(options: connectioOptions);
         user.ProfileImageUrl = "";
+        user.Projects = new List<Project>();
         ctx.Users.Add(user);
         ctx.SaveChanges();
         return user.Id;
