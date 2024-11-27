@@ -12,6 +12,6 @@ public class User
     [StringLength(maximumLength: 1200, MinimumLength = 0)]
     public string? ProfileImageUrl { get; set; }
     public int? UserRoleId { get; set; }
-    //public List<Team>? Teams { get; set; }
+    public List<Team>? Teams { get; set; }
     public List<Organization>? Organizations { get; set; }
 }

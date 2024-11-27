@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Helper.Migrations
 {
     [DbContext(typeof(GitNexusDBContext))]
-    partial class GitNexusDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241127130024_removed userIds for teams")]
+    partial class removeduserIdsforteams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,9 +110,6 @@ namespace Helper.Migrations
                     b.Property<int?>("OrganizationId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("State")
-                        .HasColumnType("tinyint(1)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizationId");
@@ -194,7 +194,7 @@ namespace Helper.Migrations
             modelBuilder.Entity("Domain.Project", b =>
                 {
                     b.HasOne("Domain.Team", "Team")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("TeamId");
 
                     b.Navigation("Team");
@@ -257,11 +257,6 @@ namespace Helper.Migrations
             modelBuilder.Entity("Domain.Organization", b =>
                 {
                     b.Navigation("Teams");
-                });
-
-            modelBuilder.Entity("Domain.Team", b =>
-                {
-                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

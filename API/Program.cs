@@ -43,6 +43,8 @@ services.AddScoped<IUserService, UserService>();
 services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IOrganizationService, OrganizationService>();
 services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+services.AddScoped<ITeamService, TeamService>();
+services.AddScoped<ITeamRepository, TeamRepository>();
 
 
 var app = builder.Build();

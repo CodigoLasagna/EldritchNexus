@@ -4,6 +4,7 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Helper.Migrations
 {
     [DbContext(typeof(GitNexusDBContext))]
-    partial class GitNexusDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241127122646_TeamsUsers")]
+    partial class TeamsUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,12 +110,17 @@ namespace Helper.Migrations
                     b.Property<int?>("OrganizationId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("State")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserIds")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrganizationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Teams");
                 });
@@ -176,25 +184,10 @@ namespace Helper.Migrations
                     b.ToTable("OrganizationUser");
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.Property<int>("TeamsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TeamsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("TeamUser");
-                });
-
             modelBuilder.Entity("Domain.Project", b =>
                 {
                     b.HasOne("Domain.Team", "Team")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("TeamId");
 
                     b.Navigation("Team");
@@ -205,6 +198,10 @@ namespace Helper.Migrations
                     b.HasOne("Domain.Organization", "Organization")
                         .WithMany("Teams")
                         .HasForeignKey("OrganizationId");
+
+                    b.HasOne("Domain.User", null)
+                        .WithMany("Teams")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Organization");
                 });
@@ -239,29 +236,14 @@ namespace Helper.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TeamUser", b =>
-                {
-                    b.HasOne("Domain.Team", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Organization", b =>
                 {
                     b.Navigation("Teams");
                 });
 
-            modelBuilder.Entity("Domain.Team", b =>
+            modelBuilder.Entity("Domain.User", b =>
                 {
-                    b.Navigation("Projects");
+                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }
