@@ -19,3 +19,13 @@ public class UserOrgModel
     public int userId { get; set; }
     public int orgId { get; set; }
 }
+
+public class OrganizationUpdateModel
+{
+    [Required]
+    public int Id { get; set; }
+    [StringLength(maximumLength: 200, MinimumLength = 0)]
+    public string? Name { get; set; }
+    [StringLength(maximumLength: 1200, MinimumLength = 0)]
+    public string? OrganizationIconUrl { get; set; }
+}

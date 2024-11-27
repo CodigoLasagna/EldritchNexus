@@ -45,12 +45,13 @@ public class OrganizationRepository : IOrganizationRepository
         {
             organizations = ctx.Organizations
                 .Include( o => o.Users)
-                .Where(o => o.Users.Any(u => u.Id != model.userId))
+                .Where(o => !o.Users.Any(u => u.Id == model.userId))
                 .ToList();
         }
         if (model.type == 2)
         {
             organizations = ctx.Organizations
+                .Include( o => o.Users)
                 .ToList()
                 .Where(o => o.AdminsIds.Contains(model.userId))
                 .ToList();
@@ -72,6 +73,23 @@ public class OrganizationRepository : IOrganizationRepository
             return false;
         
         curOrg.Users.Add( curUser );
+        ctx.SaveChanges();
+        return true;
+    }
+
+    public bool UpdateOrganization(OrganizationUpdateModel model)
+    {
+        var connectioOptions = DbConnection.GetDbContextOptions();
+        using var ctx = new GitNexusDBContext(options: connectioOptions);
+        var curOrg = ctx.Organizations.FirstOrDefault( o => o.Id == model.Id);
+        if (curOrg == null)
+            return false;
+        if (!String.IsNullOrEmpty(model.Name) && curOrg.Name != model.Name)
+            curOrg.Name = model.Name;
+        if (!String.IsNullOrEmpty(model.OrganizationIconUrl) && curOrg.OrganizationIconUrl != model.OrganizationIconUrl)
+            curOrg.OrganizationIconUrl = model.OrganizationIconUrl;
+        
+        ctx.Organizations.Update(curOrg);
         ctx.SaveChanges();
         return true;
     }

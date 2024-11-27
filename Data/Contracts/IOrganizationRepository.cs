@@ -10,4 +10,5 @@ public interface IOrganizationRepository : IGenericRespository<Organization>
     
     List<Organization> GetOrganizations(OrganizationPerTypeModel model);
     bool AddUserToOrganization(UserOrgModel model);
+    bool UpdateOrganization(OrganizationUpdateModel model);
 }

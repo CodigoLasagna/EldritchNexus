@@ -30,6 +30,11 @@ public class OrganizationService(IOrganizationRepository organizationRepository)
         return (organizationRepository.AddUserToOrganization(model));
     }
 
+    public bool UpdateOrganization(OrganizationUpdateModel model)
+    {
+        return (organizationRepository.UpdateOrganization(model));
+    }
+
     public int Create(Organization entity)
     {
         throw new NotImplementedException();
